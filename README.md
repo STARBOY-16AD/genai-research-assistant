@@ -1,162 +1,262 @@
 GenAI Research Assistant
-GenAI Research Assistant is an AI-powered tool for analyzing documents (PDF, TXT, DOCX) through summarization, question-answering, and challenge-based comprehension testing. Built with FastAPI for the backend and Streamlit for the frontend, it leverages OpenAI or Anthropic LLMs and ChromaDB for vector storage to provide intelligent document processing.
+
+Overview:
+The GenAI Research Assistant is an AI-powered web application designed for document analysis and interactive learning. It allows users to upload documents (PDF, TXT, DOCX), generate summaries, ask questions, and engage in a "Challenge Me" mode with AI-generated questions. Built with a Streamlit frontend and FastAPI backend, it leverages AI models (OpenAI, Anthropic) and a ChromaDB vector store for efficient document processing and retrieval. The project is developed in Python 3.10.9 and runs on Windows, with the frontend at http://localhost:8502 and backend at http://localhost:8000.
 Features
 
-Document Upload: Upload PDF, TXT, or DOCX files (up to 10MB) for analysis.
-Summarization: Generate concise summaries of uploaded documents.
-Ask Anything: Ask questions about the document, with answers sourced from relevant sections.
-Challenge Mode: Test your understanding with AI-generated questions that require reasoning.
-Vector Search: Uses sentence embeddings and ChromaDB for efficient context retrieval.
-Responsive UI: Streamlit-based interface with navigation, progress tracking, and source references.
+Document Upload: Upload PDF, TXT, or DOCX files with a progress bar and preview (first 500 characters).
+Document Summary: Generate bulleted summaries of uploaded documents using AI models.
+Ask Anything: Query documents with multi-document support, view up to 5 source chunks, and maintain a searchable conversation history with clear/download options.
+Challenge Me Mode: Generate 3-5 AI-crafted questions per document, submit answers, and receive scores (0-100), feedback, and reference chunks.
+UI Enhancements: 
+Theme toggle (light/dark).
+Searchable conversation history.
+Smooth navigation and responsive design.
+
+
+AI Integration: Supports OpenAI and Anthropic (Claude) models for advanced reasoning and Q&A.
+Backend: FastAPI with CORS, ChromaDB for vector storage, and robust document processing.
+Error Handling: User-friendly success/error messages and debug logging.
 
 Project Structure
 genai-research-assistant/
-├── README.md
-├── requirements.txt
-├── .env.example
-├── .gitignore
 ├── src/
 │   ├── backend/
-│   │   ├── main.py
 │   │   ├── api/
-│   │   │   ├── routes.py
-│   │   │   └── models.py
+│   │   │   └── routes.py
 │   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   ├── document_processor.py
 │   │   │   ├── ai_engine.py
-│   │   │   └── storage.py
-│   │   └── utils/
-│   │       └── helpers.py
+│   │   │   ├── document_processor.py
+│   │   │   └── config.py
+│   │   └── main.py
 │   ├── frontend/
-│   │   ├── app.py
 │   │   ├── components/
+│   │   │   ├── __init__.py
 │   │   │   ├── upload.py
-│   │   │   ├── summary.py
 │   │   │   ├── ask_anything.py
+│   │   │   ├── summary.py
 │   │   │   └── challenge_mode.py
-│   │   └── utils/
-│   │       └── ui_helpers.py
-│   └── shared/
-│       └── models.py
-├── tests/
-│   ├── test_api.py
-│   ├── test_document_processor.py
-│   └── test_ai_engine.py
+│   │   ├── utils/
+│   │   │   ├── __init__.py
+│   │   │   └── ui_helpers.py
+│   │   └── app.py
 ├── uploads/
 ├── data/
-└── scripts/
-    ├── setup.sh
-    └── run.sh
+│   └── vector_db/
+├── logs/
+├── tests/
+│   └── test_ai_engine.py
+├── .env
+├── requirements.txt
+├── stop_streamlit.ps1
+└── README.md
 
 Prerequisites
 
-Python 3.8+
-Virtualenv (recommended)
-API keys for OpenAI or Anthropic (optional for alternative LLM)
+Python: 3.10.9
+OS: Windows (tested on Windows 10/11)
+Tools: 
+VS Code with PowerShell or cmd terminal
+Git (optional for version control)
 
-Setup
 
-Clone the Repository:
-git clone <repository-url>
+API Keys: 
+OpenAI API key (OPENAI_API_KEY)
+Anthropic API key (ANTHROPIC_API_KEY)
+
+
+
+Installation
+
+Clone the Repository (if using Git):
+git clone https://github.com/STARBOY-16AD/genai-research-assistant
 cd genai-research-assistant
 
-
-Run Setup Script:
-chmod +x scripts/setup.sh
-./scripts/setup.sh
-
-This creates a virtual environment, installs dependencies, and sets up .env.
-
-Configure Environment Variables:
-
-Copy .env.example to .env:cp .env.example .env
+Or use the existing directory:
+cd C:\Users\Sumanjeet\Documents\PROJECTS\genai-research-assistant
 
 
-Edit .env to add your API keys:OPENAI_API_KEY=your-openai-key
-ANTHROPIC_API_KEY=your-anthropic-key
+Create and Activate Virtual Environment:
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 
 
+Install Dependencies:Save the following as requirements.txt:
+streamlit==1.39.0
+fastapi==0.115.2
+uvicorn==0.32.0
+chromadb==0.5.15
+openai==1.51.2
+anthropic==0.37.1
+pdfplumber==0.11.4
+python-docx==1.1.2
+sentence-transformers==3.2.0
+loguru==0.7.2
+pydantic-settings==2.6.0
+PyPDF2==3.0.1
+aiofiles==24.1.0
+requests==2.32.3
+
+Install:
+pip install -r requirements.txt
 
 
-Activate Virtual Environment:
-source venv/bin/activate
+Set Up Environment Variables:Create .env in the project root:
+OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+
+Replace your_openai_key and your_anthropic_key with your API keys.
+
+Create Directories:
+mkdir uploads
+mkdir data\vector_db
+mkdir logs
+mkdir src\frontend\components
+mkdir src\frontend\utils
+
+
+Verify __init__.py Files:Ensure empty __init__.py files exist:
+New-Item -Path src\frontend\components\__init__.py -ItemType File
+New-Item -Path src\frontend\utils\__init__.py -ItemType File
 
 
 
 Running the Application
 
-Run Both Backend and Frontend:
-chmod +x scripts/run.sh
-./scripts/run.sh
+Start the Backend:
+cd C:\Users\Sumanjeet\Documents\PROJECTS\genai-research-assistant
+.\venv\Scripts\Activate.ps1
+uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
 
 
-Backend: http://localhost:8000
-Frontend: http://localhost:8501
+Verify: http://localhost:8000/api/v1 returns {"message":"Welcome to GenAI Research Assistant API"}.
+
+
+Start the Frontend (use cmd for reliable Ctrl+C):Open a new terminal (Ctrl + ~, set to cmd):
+cd C:\Users\Sumanjeet\Documents\PROJECTS\genai-research-assistant
+venv\Scripts\activate
+python -m streamlit run src/frontend/app.py --server.port 8502 --server.address 0.0.0.0
+
+Or in PowerShell:
+python -m streamlit run src/frontend/app.py --server.port 8502 --server.address 0.0.0.0 --server.fileWatcherType none --logger.level debug
 
 
 Access the App:
 
-Open http://localhost:8501 in your browser.
-Upload a document, view its summary, ask questions, or start a challenge.
+Open http://localhost:8502 in a browser.
+Upload a document, test features, and check debug messages (DEBUG: API URL is ...).
 
 
-
-Testing
-Run unit tests to verify functionality:
-source venv/bin/activate
-pytest tests/ -v
-
-Tests cover:
-
-API endpoints (test_api.py)
-Document processing (test_document_processor.py)
-AI engine functionality (test_ai_engine.py)
 
 Usage
 
 Upload Document:
 
-Go to the upload section, select a PDF, TXT, or DOCX file, and click "Upload and Process".
-Maximum file size: 10MB.
+Navigate to http://localhost:8502.
+Upload a PDF, TXT, or DOCX file (<10MB).
+View progress bar and document preview.
 
 
-View Summary:
+Document Summary:
 
-After uploading, select "Document Summary" to see an AI-generated summary.
-
-
-Ask Questions:
-
-Choose "Ask Anything" to query the document. Answers include justifications and source references.
+Select "Summary" mode.
+Choose a document and click "Generate Summary" for a bulleted summary.
 
 
-Challenge Mode:
+Ask Anything:
 
-Select "Challenge Me" to generate 3–5 questions testing comprehension and reasoning.
-Submit answers and receive scores with feedback.
+Select "Ask Anything" mode.
+Choose one or more documents.
+Ask a question, view answers with up to 5 source chunks.
+Search, clear, or download conversation history.
+
+
+Challenge Me:
+
+Select "Challenge Me" mode.
+Generate 3-5 questions, answer them, and receive scores (0-100), feedback, and references.
+
+
+UI Features:
+
+Toggle between light/dark themes in the sidebar.
+Navigate modes and documents seamlessly.
 
 
 
-Dependencies
-Key dependencies (see requirements.txt):
+Troubleshooting
 
-FastAPI & Uvicorn: Backend API
-Streamlit: Frontend interface
-PyPDF2, pdfplumber, python-docx: Document processing
-openai, anthropic: LLM integration
-sentence-transformers, chromadb: Vector search
-pytest, httpx: Testing
+Network Error: http://localhost:8000/api/v1 cannot be reached:
+
+Verify backend:Invoke-RestMethod -Uri http://localhost:8000/api/v1
+
+
+Check debug messages at http://localhost:8502 (e.g., DEBUG: Response status: ...).
+Ensure CORS in src/backend/main.py includes http://localhost:8502.
+Test port:Test-NetConnection -ComputerName localhost -Port 8000
+
+
+Clear Streamlit cache:Remove-Item -Path .streamlit\cache -Recurse -Force -ErrorAction SilentlyContinue
+
+
+
+
+Ctrl+C Not Working:
+
+Use cmd for running Streamlit.
+Stop processes:Get-Process | Where-Object {$_.Path -like "*python.exe*" -and $_.CommandLine -like "*streamlit*"} | Stop-Process -Force
+
+
+Or use stop_streamlit.ps1.
+
+
+ImportError:
+
+Verify __init__.py files in src/frontend/components and src/frontend/utils.
+Check absolute imports in frontend files.
+
+
+Dependencies:
+pip show streamlit fastapi chromadb openai anthropic pdfplumber python-docx
+pip install -r requirements.txt
+
+
+
+Testing
+Run unit tests for the AI engine:
+pytest tests/test_ai_engine.py
+
+Example test file:
+import pytest
+from src.backend.core.ai_engine import AIEngine
+
+@pytest.fixture
+def ai_engine():
+    return AIEngine()
+
+@pytest.mark.asyncio
+async def test_answer_question(ai_engine):
+    result = await ai_engine.answer_question("Test question", ["doc1"])
+    assert "answer" in result
+    assert "source_chunks" in result
+
+Deployment
+
+Docker:
+Use Dockerfile and docker-compose.yml (request if needed).
+Build and run:docker-compose up --build
+
+
+
+
 
 Contributing
 
 Fork the repository.
-Create a feature branch: git checkout -b feature/your-feature.
-Commit changes: git commit -m "Add your feature".
-Push to the branch: git push origin feature/your-feature.
+Create a feature branch (git checkout -b feature-name).
+Commit changes (git commit -m "Add feature").
+Push (git push origin feature-name).
 Open a pull request.
 
 License
-MIT License. See LICENSE for details.
-Contact
-For issues or suggestions, open a GitHub issue or contact the maintainers.
+MIT License (modify as needed).
